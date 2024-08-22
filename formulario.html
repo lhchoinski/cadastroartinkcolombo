@@ -8,6 +8,9 @@
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
+            background: url('logo.png') no-repeat center center fixed; /* Adiciona a imagem de fundo */
+            background-size: 1000px; /* Ajusta o tamanho da imagem para cobrir toda a tela */
+            background-position-y: top;
             color: #333;
             margin: 0;
             padding: 0;
@@ -50,7 +53,7 @@
             min-height: 100px;
         }
 
-        input[type="button"] {
+        input[type="submit"] {
             background-color: #4CAF50;
             color: white;
             border: none;
@@ -64,7 +67,7 @@
             transition: background-color 0.3s ease;
         }
 
-        input[type="button"]:hover {
+        input[type="submit"]:hover {
             background-color: #45a049;
         }
     </style>
@@ -72,7 +75,9 @@
 <body>
     <div class="container">
         <h1>Preencha o Formulário</h1>
-        <form id="form">
+        <h2 style="color:#cf3939">Atenção!</h2>
+        <b><p>O evento é gratuito! Se desejar, você pode levar 1 kg de alimento ou ração para contribuir com nossa causa.</p></b>
+        <form id="form" action="https://formsubmit.co/artinkcolombo@gmail.com" method="POST" onsubmit="handleSubmit(event)">
             <label for="nome">Nome Completo:</label>
             <input type="text" id="nome" name="nome" required>
             
@@ -88,10 +93,7 @@
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required>
             
-            <label for="mensagem">Mensagem:</label>
-            <textarea id="mensagem" name="mensagem" required></textarea>
-            
-            <input type="button" value="Enviar e Baixar PDF" onclick="gerarPDF()">
+            <input type="submit" value="Enviar">
         </form>
     </div>
 
@@ -107,7 +109,6 @@
             const idade = document.getElementById("idade").value;
             const telefone = document.getElementById("telefone").value;
             const email = document.getElementById("email").value;
-            const mensagem = document.getElementById("mensagem").value;
 
             // Adicionando o logotipo
             const logoUrl = 'logo.png'; // Caminho para a imagem na raiz do projeto
@@ -117,32 +118,74 @@
             // Definindo estilos
             doc.setFont("helvetica");
 
-            // Adicionando o logotipo
-            doc.addImage(logoDataUrl, 'PNG', 10, 10, 50, 20); // Ajuste o tamanho conforme necessário
+            // Layout do ingresso
+            const largura = 200;
+            const altura = 130;
+            const margem = 10;
 
-            // Adicionando o nome do evento
-            doc.setFontSize(24);
+            // Adicionando o logotipo
+            doc.addImage(logoDataUrl, 'PNG', margem + 10, margem + 10, 50, 20); // Ajuste o tamanho conforme necessário
+
+            // Adicionando ingresso
+            doc.setFontSize(25);
             doc.setFont("helvetica", "bold");
-            doc.setTextColor(0, 100, 0); // Verde escuro
-            doc.text("ART LINK COLOMBO", 70, 20);
+            doc.setTextColor(0, 0, 0); // Verde escuro
+            const x = 105; // Posição horizontal centralizada
+            const y = 20;
+            doc.text("*INGRESSO*", margem + 105, margem + 20);
+            
 
             // Adicionando detalhes do ingresso
             doc.setFontSize(16);
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor(0, 0, 0); // Preto
+
+            const startY = 50;
+            const lineHeight = 10;
+
+            doc.text("Nome Completo:", margem + 10, startY);
+            doc.setFont("helvetica", "normal");
+            doc.text(nome, margem + 10, startY + lineHeight);
+
+            doc.setFont("helvetica", "bold");
+            doc.text("CPF:", margem + 10, startY + 2 * lineHeight);
+            doc.setFont("helvetica", "normal");
+            doc.text(cpf, margem + 10, startY + 3 * lineHeight);
+
+            doc.setFont("helvetica", "bold");
+            doc.text("Idade:", margem + 10, startY + 4 * lineHeight);
+            doc.setFont("helvetica", "normal");
+            doc.text(idade, margem + 10, startY + 5 * lineHeight);
+
+            doc.setFont("helvetica", "bold");
+            doc.text("Telefone:", margem + 10, startY + 6 * lineHeight);
+            doc.setFont("helvetica", "normal");
+            doc.text(telefone, margem + 10, startY + 7 * lineHeight);
+
+            doc.setFont("helvetica", "bold");
+            doc.text("Email:", margem + 10, startY + 8 * lineHeight);
+            doc.setFont("helvetica", "normal");
+            doc.text(email, margem + 10, startY + 9 * lineHeight);
+
+            // Adicionando o rodapé
+            doc.setFontSize(12);
             doc.setFont("helvetica", "normal");
             doc.setTextColor(0, 0, 0); // Preto
 
-            const startY = 40;
-            const lineHeight = 10;
+            // Adicionando o logotipo no rodapé
+            doc.addImage(logoDataUrl, 'PNG', margem + 10, 250, 20, 10); // Ajuste o tamanho conforme necessário
 
-            doc.text(`Nome Completo: ${nome}`, 10, startY);
-            doc.text(`CPF: ${cpf}`, 10, startY + lineHeight);
-            doc.text(`Idade: ${idade}`, 10, startY + 2 * lineHeight);
-            doc.text(`Telefone: ${telefone}`, 10, startY + 3 * lineHeight);
-            doc.text(`Email: ${email}`, 10, startY + 4 * lineHeight);
-            doc.text(`Mensagem: ${mensagem}`, 10, startY + 5 * lineHeight);
+            // Adicionando o endereço
+            const endereco = "5000, Rod. Régis Bittencourt, Km 6 Bairro - Mauá, Colombo - PR, 83413-663";
+            doc.text(endereco, margem + 40, 255); // Ajuste a posição conforme necessário
 
             // Salvando o PDF
             doc.save("ingresso_formulario.pdf");
+        }
+
+        function handleSubmit(event) {
+            gerarPDF(); // Gera o PDF
+            alert('Clique em "OK" e aguarde enquanto você é redirecionado para a próxima página.');
         }
     </script>
 </body>
