@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        h1 {
+            color: #4CAF50;
+        }
+
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input[type="text"], input[type="email"], input[type="number"], textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        input[type="button"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="button"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Preencha o Formulário</h1>
+        <form id="form">
+            <label for="nome">Nome Completo:</label>
+            <input type="text" id="nome" name="nome" required>
+            
+            <label for="cpf">CPF:</label>
+            <input type="text" id="cpf" name="cpf" required>
+            
+            <label for="idade">Idade:</label>
+            <input type="number" id="idade" name="idade" required>
+            
+            <label for="telefone">Telefone:</label>
+            <input type="text" id="telefone" name="telefone" required>
+            
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            
+            <label for="mensagem">Mensagem:</label>
+            <textarea id="mensagem" name="mensagem" required></textarea>
+            
+            <input type="button" value="Enviar e Baixar PDF" onclick="gerarPDF()">
+        </form>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script>
+        async function gerarPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Obtendo os valores dos campos do formulário
+            const nome = document.getElementById("nome").value;
+            const cpf = document.getElementById("cpf").value;
+            const idade = document.getElementById("idade").value;
+            const telefone = document.getElementById("telefone").value;
+            const email = document.getElementById("email").value;
+            const mensagem = document.getElementById("mensagem").value;
+
+            // Adicionando o logotipo
+            const logoUrl = 'logo.png'; // Caminho para a imagem na raiz do projeto
+            const logo = await fetch(logoUrl).then(response => response.blob());
+            const logoDataUrl = URL.createObjectURL(logo);
+
+            // Definindo estilos
+            doc.setFont("helvetica");
+
+            // Adicionando o logotipo
+            doc.addImage(logoDataUrl, 'PNG', 10, 10, 50, 20); // Ajuste o tamanho conforme necessário
+
+            // Adicionando o nome do evento
+            doc.setFontSize(24);
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor(0, 100, 0); // Verde escuro
+            doc.text("ART LINK COLOMBO", 70, 20);
+
+            // Adicionando detalhes do ingresso
+            doc.setFontSize(16);
+            doc.setFont("helvetica", "normal");
+            doc.setTextColor(0, 0, 0); // Preto
+
+            const startY = 40;
+            const lineHeight = 10;
+
+            doc.text(`Nome Completo: ${nome}`, 10, startY);
+            doc.text(`CPF: ${cpf}`, 10, startY + lineHeight);
+            doc.text(`Idade: ${idade}`, 10, startY + 2 * lineHeight);
+            doc.text(`Telefone: ${telefone}`, 10, startY + 3 * lineHeight);
+            doc.text(`Email: ${email}`, 10, startY + 4 * lineHeight);
+            doc.text(`Mensagem: ${mensagem}`, 10, startY + 5 * lineHeight);
+
+            // Salvando o PDF
+            doc.save("ingresso_formulario.pdf");
+        }
+    </script>
+</body>
+</html>
